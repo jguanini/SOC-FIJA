@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Soc Fija DATA HUB</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@500;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      /* Paleta Celeste Oscuro */
+      --blue-primary:  #004b79; 
+      --blue-mid:      #006b9f;
+      --blue-accent:   #008ece;
+      --blue-light:    #e0f2fe;
+      --border-color:  #bae6fd;
+      --text-main:     #0f172a;
+      --text-muted:    #475569;
+      --badge-prod:    #15803d;
+      --badge-beta:    #b45309;
+      --badge-test:    #6d28d9;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: #f0f8ff;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+
+    /* ── LOGIN OVERLAY ────────────────────────────────────── */
+    #login-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: #f0f8ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+    }
+
+    .login-card {
+      background: #fff;
+      width: 100%;
+      max-width: 380px;
+      padding: 2.5rem 2rem;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      box-shadow: 0 8px 25px rgba(0, 75, 121, 0.15);
+      text-align: center;
+    }
+
+    .login-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--blue-light);
+      color: var(--blue-primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      margin: 0 auto 1.5rem auto;
+    }
+
+    .login-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      color: var(--blue-primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .login-btn {
+      background: var(--blue-primary);
+      color: #fff;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      border: none;
+      transition: background 0.2s;
+    }
+
+    .login-btn:hover {
+      background: var(--blue-mid);
+      color: #fff;
+    }
+
+    /* ── HEADER ───────────────────────────────────────────── */
+    .main-header {
+      background: linear-gradient(90deg, var(--blue-primary) 0%, var(--blue-mid) 60%, var(--blue-accent) 100%);
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0, 75, 121, 0.35);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .header-brand .brand-icon {
+      width: 36px;
+      height: 36px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      color: #fff;
+    }
+
+    .header-brand .brand-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: #fff;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .header-brand .brand-sub {
+      font-size: 0.68rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: rgba(255,255,255,0.65);
+      text-transform: uppercase;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: rgba(255,255,255,0.9);
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+
+    .header-right .bi {
+      font-size: 1.4rem;
+      opacity: 0.9;
+    }
+
+    /* ── MAIN CONTENT ─────────────────────────────────────── */
+    .content-wrapper {
+      flex: 1;
+      padding: 2rem 2.5rem;
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      padding-left: 2px;
+    }
+
+    /* ── TABLERO CARD ─────────────────────────────────────── */
+    .tablero-card {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      margin-bottom: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0, 75, 121, 0.06);
+      transition: box-shadow 0.2s;
+    }
+
+    .tablero-card:hover {
+      box-shadow: 0 4px 12px rgba(0, 75, 121, 0.12);
+    }
+
+    .tablero-featured {
+      border: 3px solid var(--blue-primary);
+      box-shadow: 0 4px 15px rgba(0, 75, 121, 0.15);
+    }
+
+    .tablero-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0.85rem 1.2rem;
+      cursor: pointer;
+      user-select: none;
+      background: #fff;
+      transition: background 0.15s;
+      border: none;
+      width: 100%;
+      text-align: left;
+    }
+
+    .tablero-header:hover, .tablero-header.expanded { 
+      background: var(--blue-light); 
+    }
+
+    .tablero-icon {
+      width: 32px;
+      height: 32px;
+      background: var(--blue-primary);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .tablero-icon-star { background: var(--blue-accent); }
+
+    .tablero-title {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: var(--blue-primary);
+      text-transform: uppercase;
+      flex: 1;
+    }
+
+    .tablero-meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-right: 8px;
+      font-weight: 500;
+    }
+
+    .tablero-arrow {
+      font-size: 1rem;
+      color: var(--blue-accent);
+      transition: transform 0.25s ease;
+    }
+
+    .tablero-header.expanded .tablero-arrow { transform: rotate(180deg); }
+
+    /* ── ITEMS LIST ───────────────────────────────────────── */
+    .items-container {
+      display: none;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .items-container.open { display: block; }
+
+    .item-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.62rem 1.2rem 0.62rem 3.6rem;
+      border-bottom: 1px solid #eef1f7;
+      transition: background 0.12s;
+    }
+
+    .item-row:last-child { border-bottom: none; }
+    .item-row:hover { background: #f4faff; }
+
+    .app-logo {
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      flex-shrink: 0;
+    }
+    .logo-looker { color: #4285F4; } 
+    .logo-grafana { color: #F46800; } 
+    .logo-nps { color: #00B4D8; } 
+
+    .item-name {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      font-weight: 600;
+      min-width: 90px;
+    }
+
+    .item-link {
+      font-size: 0.83rem;
+      color: var(--blue-accent);
+      text-decoration: none;
+      font-weight: 500;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: color 0.15s;
+    }
+
+    .item-link:hover {
+      color: var(--blue-primary);
+      text-decoration: underline;
+    }
+
+    .item-link .bi {
+      font-size: 0.75rem;
+      margin-left: 4px;
+      opacity: 0.6;
+    }
+
+    /* ── ENVIRONMENT BADGES ───────────────────────────────── */
+    .env-badge {
+      font-size: 0.62rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .badge-prod { background: #dcfce7; color: var(--badge-prod); border: 1px solid #bbf7d0; }
+    .badge-beta { background: #fef3c7; color: var(--badge-beta); border: 1px solid #fde68a; }
+    .badge-test { background: #f3e8ff; color: var(--badge-test); border: 1px solid #e9d5ff; }
+    
+    .badges-group { display: flex; gap: 4px; }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    .main-footer {
+      background: var(--blue-primary);
+      color: rgba(255,255,255,0.65);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: auto;
+    }
+
+    .footer-left { display: flex; align-items: center; gap: 8px; }
+    .footer-left .bi { color: rgba(255,255,255,0.4); }
+    .footer-brand { color: rgba(255,255,255,0.9); font-weight: 600; }
+    .footer-sep { color: rgba(255,255,255,0.2); margin: 0 4px; }
+    .footer-user { color: rgba(255,255,255,0.7); }
+    .footer-right { font-size: 0.7rem; }
+  </style>
+</head>
+<body>
+
+  <div id="login-overlay">
+    <div class="login-card">
+      <div class="login-icon">
+        <i class="bi bi-shield-lock-fill"></i>
+      </div>
+      <h4 class="login-title">Acceso Restringido</h4>
+      <p class="text-muted mb-4" style="font-size: 0.9rem;">Ingresá tu contraseña para acceder al entorno.</p>
+      
+      <div class="input-group mb-3">
+        <span class="input-group-text bg-white text-muted border-end-0"><i class="bi bi-key"></i></span>
+        <input type="password" id="pass-input" class="form-control border-start-0 ps-0" placeholder="Contraseña..." autocomplete="off">
+      </div>
+      
+      <div id="login-error" class="text-danger mb-3" style="font-size: 0.85rem; display: none; font-weight: 500;">
+        <i class="bi bi-exclamation-circle me-1"></i>Contraseña incorrecta.
+      </div>
+      
+      <button id="btn-login" class="btn login-btn w-100">Ingresar al Data Hub</button>
+    </div>
+  </div>
+
+  <div id="app-content" style="display: none; flex-direction: column; min-height: 100vh;">
+    <header class="main-header">
+      <div class="header-brand">
+        <div class="brand-icon"><i class="bi bi-diagram-3-fill"></i></div>
+        <div>
+          <div class="brand-title">Soc Fija &nbsp;·&nbsp; Data Hub</div>
+          <div class="brand-sub">Portal de Recursos &amp; Tableros</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <i class="bi bi-globe"></i>
+        Personal Argentina
+      </div>
+    </header>
+
+    <main class="content-wrapper">
+      <div class="section-label"><i class="bi bi-layout-text-sidebar-reverse me-1"></i>Tableros disponibles</div>
+
+      <div class="tablero-card tablero-featured">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon tablero-icon-star"><i class="bi bi-star-fill"></i></div>
+          <span class="tablero-title">Tablero Ejecutivo General &mdash; SOC FIJA</span>
+          <span class="tablero-meta">1 recurso</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker" title="Looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/2ba6e7cc-8212-4e88-a8ca-7bf882b1387b/page/p_g1cxt7rp1d" target="_blank" class="item-link">datastudio.google.com/.../p_g1cxt7rp1d<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label mt-4"><i class="bi bi-hdd-network me-1"></i>Conectividad Fija</div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-broadcast"></i></div>
+          <span class="tablero-title">Extensores</span>
+          <span class="tablero-meta">2 recursos</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/878af0f2-ad3e-448a-a558-4bc2f3a563bf/page/tEnnC?s=rK6dKBpdBp0" target="_blank" class="item-link">datastudio.google.com/.../tEnnC<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+          <div class="item-row">
+            <i class="bi bi-chat-square-quote-fill app-logo logo-nps"></i>
+            <span class="item-name">NPS</span>
+            <a href="https://telecom.yul1.qualtrics.com/reporting-dashboard/web/6888c393c45cb00008d44d68/pages/Page_a551dfeb-0e1a-44f2-ad6c-7e8d448a8cef/view" target="_blank" class="item-link">telecom.yul1.qualtrics.com/.../view<i class="bi bi-box-arrow-up-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-arrow-repeat"></i></div>
+          <span class="tablero-title">CATEC</span>
+          <span class="tablero-meta">3 recursos</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/bc76c088-56b6-4ea0-9e07-1d9cf8358eca/page/p_l9kc8swvsd" target="_blank" class="item-link">datastudio.google.com/.../p_l9kc8swvsd<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+          <div class="item-row">
+            <i class="bi bi-graph-up-arrow app-logo logo-grafana"></i>
+            <span class="item-name">Grafana</span>
+            <a href="https://unmacme.telecom.com.ar/grafana/d/ffhbl22ygj08we/monitoreo-efectividad-wifi-catec?orgId=1&from=now-30d&to=now-1d&timezone=browser&var-tiempo=day&var-ont=$__all" target="_blank" class="item-link">unmacme.telecom.com.ar/.../monitoreo-wifi<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+          <div class="item-row">
+            <i class="bi bi-chat-square-quote-fill app-logo logo-nps"></i>
+            <span class="item-name">NPS</span>
+            <a href="https://telecom.yul1.qualtrics.com/reporting-dashboard/web/66b50700bacafb0008c6431c/pages/Page_9c84d2b5-9189-4cd6-b109-c66622551f40/view?organizationSSOConfigId=OSC_9ZFYtqcbBW5kE3c&stateID=68a17d47-8133-4af9-8242-6c4f963c83df" target="_blank" class="item-link">telecom.yul1.qualtrics.com/.../view<i class="bi bi-box-arrow-up-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-router"></i></div>
+          <span class="tablero-title">TMA</span>
+          <span class="tablero-meta">1 recurso</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/u/0/reporting/dbabdb66-93b9-487d-95ca-9ec5fb4ce225/page/p_l9kc8swvsd" target="_blank" class="item-link">datastudio.google.com/.../p_l9kc8swvsd<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-speedometer2"></i></div>
+          <span class="tablero-title">Velocidad (OOKLA)</span>
+          <span class="tablero-meta">2 recursos</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/2bf6ce88-380a-4e99-88ab-31f672c645a9/page/hK5LF" target="_blank" class="item-link">datastudio.google.com/.../hK5LF<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+          <div class="item-row">
+            <i class="bi bi-graph-up-arrow app-logo logo-grafana"></i>
+            <span class="item-name">Grafana</span>
+            <a href="https://unmacme.telecom.com.ar/grafana/d/cewhxxt1r6ewwe/server-teco-en-ookla?orgId=1&from=now-7d&to=now&timezone=browser&var-ooklaserver=$__all&var-Region=$__all" target="_blank" class="item-link">unmacme.telecom.com.ar/.../server-teco<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-box-seam"></i></div>
+          <span class="tablero-title">Provisión</span>
+          <span class="tablero-meta">1 recurso</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/6455fa03-8b7c-4871-9374-0d14aa85521e/page/p_l9kc8swvsd" target="_blank" class="item-link">datastudio.google.com/.../p_l9kc8swvsd<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-shield-check"></i></div>
+          <span class="tablero-title">Internet BKP</span>
+          <span class="tablero-meta">2 recursos</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/efe05aa2-4b71-4ef6-bd85-8ac269904567" target="_blank" class="item-link">datastudio.google.com/.../efe05aa2...<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+          <div class="item-row">
+            <i class="bi bi-chat-square-quote-fill app-logo logo-nps"></i>
+            <span class="item-name">NPS</span>
+            <a href="https://telecom.yul1.qualtrics.com/reporting-dashboard/web/698a4a1c3aa01e000853885c/pages/Page_8fc6ceb9-b63a-4585-9763-8e9ce89fddf2/view?organizationSSOConfigId=OSC_9ZFYtqcbBW5kE3c&stateID=62be3439-ec4d-4ebb-825a-9c8a8a5074fb" target="_blank" class="item-link">telecom.yul1.qualtrics.com/.../view<i class="bi bi-box-arrow-up-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-person-plus-fill"></i></div>
+          <span class="tablero-title">Altas</span>
+          <span class="tablero-meta">2 recursos</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/8cf7ad0c-25b7-4626-ac17-c6851b0ed4c4/page/p_l9kc8swvsd" target="_blank" class="item-link">datastudio.google.com/.../p_l9kc8swvsd<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/505e52f3-5770-4dab-bbed-82a50457baf2/page/p_l9kc8swvsd" target="_blank" class="item-link">datastudio.google.com/.../p_l9kc8swvsd<i class="bi bi-box-arrow-up-right"></i></a>
+            <div class="badges-group">
+              <span class="env-badge badge-beta">Beta</span>
+              <span class="env-badge badge-test">Test</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-telephone-inbound"></i></div>
+          <span class="tablero-title">TOIP</span>
+          <span class="tablero-meta">0 recursos</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          </div>
+      </div>
+
+      <div class="section-label mt-4"><i class="bi bi-hdd-network me-1"></i>Dispositivos & OTTs</div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-play-circle"></i></div>
+          <span class="tablero-title">Flow</span>
+          <span class="tablero-meta">2 recursos</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-graph-up-arrow app-logo logo-grafana"></i>
+            <span class="item-name">Grafana</span>
+            <a href="http://socflow.telecom.com.ar/grafana/d/W-BPh2mDk/soc-flow-qoe-playback-m11?from=now-30d&to=now&orgId=1" target="_blank" class="item-link">socflow.telecom.com.ar/.../qoe-playback<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+          <div class="item-row">
+            <i class="bi bi-chat-square-quote-fill app-logo logo-nps"></i>
+            <span class="item-name">NPS</span>
+            <a href="https://datastudio.google.com/reporting/79463f8b-858f-4bdc-94f8-f2ba95923fb4/page/p_055admzfud" target="_blank" class="item-link">datastudio.google.com/.../p_055admzfud<i class="bi bi-box-arrow-up-right"></i></a>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-house-gear"></i></div>
+          <span class="tablero-title">SmartHome</span>
+          <span class="tablero-meta">1 recurso</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          <div class="item-row">
+            <i class="bi bi-bar-chart-line-fill app-logo logo-looker"></i>
+            <span class="item-name">Looker</span>
+            <a href="https://datastudio.google.com/reporting/df8e966d-4713-409c-9a84-b1c4add83da2/page/p_jendnzncod" target="_blank" class="item-link">datastudio.google.com/.../p_jendnzncod<i class="bi bi-box-arrow-up-right"></i></a>
+            <span class="env-badge badge-prod">Prod</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="tablero-card">
+        <button class="tablero-header" onclick="toggleTablero(this)">
+          <div class="tablero-icon"><i class="bi bi-wifi"></i></div>
+          <span class="tablero-title">Wifi Zone</span>
+          <span class="tablero-meta">0 recursos</span>
+          <i class="bi bi-chevron-down tablero-arrow"></i>
+        </button>
+        <div class="items-container">
+          </div>
+      </div>
+
+    </main>
+
+    <footer class="main-footer">
+      <div class="footer-left">
+        <i class="bi bi-building"></i>
+        <span class="footer-brand">Soc Fija</span>
+        <span class="footer-sep">|</span>
+        <span class="footer-user">Javier Guanini &nbsp;&mdash;&nbsp; u606668</span>
+      </div>
+      <div class="footer-right">
+        &copy; 2026 &mdash; Uso interno. Todos los derechos reservados.
+      </div>
+    </footer>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Lógica para los tableros
+    function toggleTablero(btn) {
+      const container = btn.nextElementSibling;
+      const isOpen = container.classList.contains('open');
+      
+      // Cerrar todos
+      document.querySelectorAll('.items-container.open').forEach(c => c.classList.remove('open'));
+      document.querySelectorAll('.tablero-header.expanded').forEach(b => b.classList.remove('expanded'));
+      
+      // Abrir el actual si estaba cerrado y si tiene contenido
+      if (!isOpen && container.children.length > 0) { 
+        container.classList.add('open');
+        btn.classList.add('expanded');
+      }
+    }
+
+    // Lógica para el Login Ofuscado
+    function checkLogin() {
+      const input = document.getElementById('pass-input').value;
+      const errorDiv = document.getElementById('login-error');
+      
+      // Ofuscación simple: Le sumamos 3 posiciones al código ASCII de cada letra que ingresa el usuario.
+      // "socfija" transformado con +3 se convierte en "vrfilmd"
+      let encoded = '';
+      for (let i = 0; i < input.length; i++) {
+        encoded += String.fromCharCode(input.charCodeAt(i) + 3);
+      }
+
+      if (encoded === 'vrfilmd') {
+        // Contraseña correcta
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('app-content').style.display = 'flex';
+      } else {
+        // Contraseña incorrecta
+        errorDiv.style.display = 'block';
+        // Agita el modal un poco
+        const card = document.querySelector('.login-card');
+        card.animate([
+          { transform: 'translateX(0px)' },
+          { transform: 'translateX(-10px)' },
+          { transform: 'translateX(10px)' },
+          { transform: 'translateX(-10px)' },
+          { transform: 'translateX(10px)' },
+          { transform: 'translateX(0px)' }
+        ], { duration: 400, iterations: 1 });
+      }
+    }
+
+    // Escuchar el clic en el botón
+    document.getElementById('btn-login').addEventListener('click', checkLogin);
+
+    // Escuchar el "Enter" en el input
+    document.getElementById('pass-input').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkLogin();
+      }
+    });
+  </script>
+</body>
+</html>
